@@ -1,0 +1,17 @@
+{
+  "name": "weather",
+  "version": "1.0.0",
+  "description": "",
+  "main": "weather-app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "file:node_modules/bootstrap",
+    "express": "^4.17.1",
+    "jquery": "^3.6.0",
+    "request": "^2.88.2"
+  }
+}
