@@ -1,17 +1,95 @@
 ﻿<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+    <script src="./js/jquery-3.6.0.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+          integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+          crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+            crossorigin=""></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
 
-<div id="map" style="height: 400px; width : 400px;"></div>
+</head>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
-      integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-      crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
-        integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
-        crossorigin=""></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
+<body>
+    <div class="row">
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <h1>Guess the Place</h1>
+
+            <div class="map-responsive">
+                <iframe src="https://www.google.com/maps/embed?pb=!4v1653233659882!6m8!1m7!1sCAoSLEFGMVFpcE51cWc3SnRDMF9FT2Z6b0pFVWRHTUptYlAweXVLaWpKZXhQUlBE!2m2!1d39.9510271!2d-75.1816753!3f199.50807909639346!4f36.569994802617686!5f0.4000000000000002" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
+
+                <button type="button" class="btn btn-info btn-lg" id="button" >Make Guess</button>
+            </div>
+
+            <p id="p1"> Guess the location with as little ink as possible!</p>
+            
+            <div id="map"></div>
+           
+            <div class="container">
+                <h2 id="score">Score: </h2>
+                <!-- Trigger the modal with a button -->
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+</body>
+</html>
 <script>
-
+    $("#button").click(function () {
+        $('html,body').animate({
+            scrollTop: $("#map").offset().top
+        },
+            'fast');
+    });
+    
 
 
     // center of the map
@@ -63,8 +141,9 @@
                 }
             },
             circle: false, // Turns off this drawing tool
-            rectangle: {
+            circle: {
                 shapeOptions: {
+                   
                     clickable: false
                 }
             },
@@ -88,11 +167,15 @@
 
 
     var editableLayers = new L.FeatureGroup();
+    
+    editableLayers.color = "#fff";
     map.addLayer(editableLayers);
+    
 
 
 
-
+    var counter = 0;
+    
     map.on('draw:created', function (e) {
         var type = e.layerType,
             layer = e.layer;
@@ -100,8 +183,66 @@
         if (type === 'marker') {
             layer.bindPopup('A popup!');
         }
+        if (type === 'circle') {
+
+            counter = counter + 1;
+            if (counter === 3) {
+                $('#exampleModal').modal('toggle');
+            }
+
+            
+            var theCenterPt = layer.getLatLng();
+            var theRadius = layer.getRadius();
+            latlng_a = new L.LatLng(39.950476966453934, -75.18113411647714);
+
+            console.log(latlng_a.distanceTo(theCenterPt));
+            console.log("radius must be less than above to be within" + theRadius);
+            if (theRadius > latlng_a.distanceTo(theCenterPt)) {
+                console.log(theRadius);
+                layer.options.color = "#7CFC00";
+    
+                if (theRadius < 10000) {
+                    document.querySelector("body > div > div > div.container > h2").innerText = "Score: 5"
+                }
+                else if (theRadius < 500000) {
+                    document.querySelector("body > div > div > div.container > h2").innerText = "Score: 4"
+                }
+                else if (theRadius < 2000000) {
+                    document.querySelector("body > div > div > div.container > h2").innerText = "Score: 3"
+                }
+                else if (theRadius < 3000000) {
+                    document.querySelector("body > div > div > div.container > h2").innerText = "Score: 2"
+                }
+                else if (theRadius < 10000000) {
+                    document.querySelector("body > div > div > div.container > h2").innerText = "Score: 1"
+                }
+            }
+            
+
+        }
+
 
         editableLayers.addLayer(layer);
+    });
+
+    var lat, lng;
+
+    map.addEventListener('mousemove', function (ev) {
+
+        lat = ev.latlng.lat;
+        lng = ev.latlng.lng;
+
+    });
+
+    document.getElementById("map").addEventListener("click", function (event) {
+        // Prevent the browser's context menu from appearing
+        event.preventDefault();
+
+        // Add marker
+
+
+
+        return false; // To disable default popup.
     });
 
 </script>
