@@ -79,10 +79,18 @@ body {
 }
 
 #map {
-    height: 60%    
+    height: 100%    
 }
 #map1 {
-    height: 60%;
+    height: 100%;
+}
+
+#refreshButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    z-index: 400;
 }
 
 html, body {
