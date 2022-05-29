@@ -79,11 +79,15 @@ body {
 }
 
 #map {
-    height: 100%;
+    height: 78%;
     
+}
+#map1 {
+    height: 80%;
 }
 
 html, body {
     height: 100%;
     margin: 0;
+    overflow: hidden
 }

@@ -26,19 +26,40 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <h1>Guess the Place</h1>
 
-            <div class="map-responsive">
+            <div class="map-responsive" id="street">
                 <iframe src="https://www.google.com/maps/embed?pb=!4v1653233659882!6m8!1m7!1sCAoSLEFGMVFpcE51cWc3SnRDMF9FT2Z6b0pFVWRHTUptYlAweXVLaWpKZXhQUlBE!2m2!1d39.9510271!2d-75.1816753!3f199.50807909639346!4f36.569994802617686!5f0.4000000000000002" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
 
                 <button type="button" class="btn btn-info btn-lg" id="button" >Make Guess</button>
             </div>
 
-            <p id="p1"> Guess the location with as little ink as possible!</p>
-            
-            <div id="map"></div>
+            <p id="p1">
+                Guess
+                the location with as little ink as possible!
+            </p>
+            <div id="map1">
+                <button type="button" class="btn btn-info btn-lg" id="buttonMap">Investigate</button>
+                <div id="map">
+                </div>
+            </div>
            
             <div class="container">
                 <h2 id="score">Score: </h2>
+                <!-- Trigger the modal with a button -->
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
 
+                        <!-- Modal content-->
+                        <div class="modal-content">
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
         </div>
@@ -51,7 +72,14 @@
 <script>
     $("#button").click(function () {
         $('html,body').animate({
-            scrollTop: $("#map").offset().top
+            scrollTop: $("#map1").offset().top
+        },
+            'fast');
+    });
+
+    $("#buttonMap").click(function () {
+        $('html,body').animate({
+            scrollTop: $("#street").offset().top
         },
             'fast');
     });
@@ -152,7 +180,7 @@
         if (type === 'circle') {
 
             counter = counter + 1;
-            if (counter === 3) {
+            if (counter === 5) {
                 $('#exampleModal').modal('toggle');
             }
 
@@ -165,9 +193,11 @@
             console.log("radius must be less than above to be within" + theRadius);
             if (theRadius > latlng_a.distanceTo(theCenterPt)) {
                 console.log(theRadius);
+
                 layer.options.color = "#7CFC00";
     
-                if (theRadius < 10000) {
+                if (theRadius < 25000) {
+                    $('#exampleModal').modal('toggle');
                     document.querySelector("body > div > div > div.container > h2").innerText = "Score: 5"
                 }
                 else if (theRadius < 500000) {
