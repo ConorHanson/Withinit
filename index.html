@@ -29,15 +29,20 @@
             <div class="map-responsive" id="street">
                 <iframe src="https://www.google.com/maps/embed?pb=!4v1653233659882!6m8!1m7!1sCAoSLEFGMVFpcE51cWc3SnRDMF9FT2Z6b0pFVWRHTUptYlAweXVLaWpKZXhQUlBE!2m2!1d39.9510271!2d-75.1816753!3f199.50807909639346!4f36.569994802617686!5f0.4000000000000002" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
 
-                <button type="button" class="btn btn-info btn-lg" id="button" >Make Guess</button>
+                <button type="button" class="btn btn-dark btn-lg" id="button" >Make Guess</button>
             </div>
 
 
             <div id="map1">
                 <div id="map">
-                    <div class="btn-group" style="z-index: 1001">
+                    <div class="btn-group" style="z-index: 1001" ; margin-right: 15px;>
                         <!-- Use 401 to be between map and controls -->
-                        <button type="buttons" id="button2" class="btn btn-success">All</button>
+                        <button type="button" id="button3" class="btn btn-dark btn-lg">Investigate</button>
+                    </div>
+
+                    <div class="btn-group" style="z-index: 1001" ; margin-right: 15px;>
+                        <!-- Use 401 to be between map and controls -->
+                        <button type="button" id="button2" class="btn btn-dark btn-lg" style="padding-left : 20px;">Make Guess</button>
                     </div>
                 </div>
 
@@ -97,11 +102,15 @@
             'fast');
     });
 
-    $("#button2").click(function () {
+    $("#button3").click(function () {
         $('html,body').animate({
             scrollTop: $("#street").offset().top
         },
             'fast');
+    });
+
+    $("#button2").click(function () {
+        new L.Draw.Circle(map, drawControl.options.circle).enable();
     });
 
 
@@ -118,8 +127,8 @@
     }).addTo(map);
 
     // add a marker in the given location
-    L.marker(center).addTo(map);
 
+    map.removeControl(map.zoomControl);
     // Initialise the FeatureGroup to store editable layers
     var editableLayers = new L.FeatureGroup();
     map.addLayer(editableLayers);
@@ -137,41 +146,19 @@
     var drawPluginOptions = {
         position: 'topright',
         draw: {
-            polyline: {
-                shapeOptions: {
-                    color: '#f357a1',
-                    weight: 10
-                }
-            },
-            polygon: {
-                allowIntersection: false, // Restricts shapes to simple polygons
-                drawError: {
-                    color: '#e1e100', // Color the shape will turn when intersects
-                    message: '<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)' // Message that will show when intersect
-                },
-                shapeOptions: {
-                    color: '#bada55'
-                }
-            },
-            circle: false, // Turns off this drawing tool
-            circle: {
-                shapeOptions: {
-                   
-                    clickable: false
-                }
-            },
-            marker: {
-                icon: new MyCustomMarker()
-            }
+
+            polygon: false,
+            polyline: false,
+            rectangle: false,
+            circle: false,
+            marker: false
+
         },
         edit: {
             featureGroup: editableLayers, //REQUIRED!!
             remove: false
         }
     };
-
-
-
 
 
     // Initialise the draw control and pass it the FeatureGroup of editable layers
@@ -183,10 +170,6 @@
     
     editableLayers.color = "#fff";
     map.addLayer(editableLayers);
-    
-
-
-
     var counter = 0;
     
     map.on('draw:created', function (e) {
@@ -214,11 +197,8 @@
                 console.log(theRadius);
 
                 layer.options.color = "#7CFC00";
-    
-
+   
             }
-            
-
         }
 
 
