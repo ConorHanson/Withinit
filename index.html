@@ -27,9 +27,8 @@
 
 
             <div class="map-responsive" id="street">
-                <iframe src="https://www.google.com/maps/embed?pb=!4v1653233659882!6m8!1m7!1sCAoSLEFGMVFpcE51cWc3SnRDMF9FT2Z6b0pFVWRHTUptYlAweXVLaWpKZXhQUlBE!2m2!1d39.9510271!2d-75.1816753!3f199.50807909639346!4f36.569994802617686!5f0.4000000000000002" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
-
-                <button type="button" class="btn btn-dark btn-lg" id="button" >Make Guess</button>
+                <iframe src="https://www.google.com/maps/embed?pb=!4v1654109933810!6m8!1m7!1sCAoSLEFGMVFpcE1CVFBhd01CMmJYNW94MlROakd1WkRobDVBRTdjQjhpRnJKN1Rk!2m2!1d59.3316956!2d18.0763512!3f15.278514588859409!4f-0.15915119363396002!5f0.4000000000000002" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <button type="button" class="btn btn-dark btn-lg" id="button">Make Guess</button>
             </div>
 
 
@@ -44,10 +43,12 @@
                         <!-- Use 401 to be between map and controls -->
                         <button type="button" id="button2" class="btn btn-dark btn-lg" style="padding-left : 20px;">Make Guess</button>
                     </div>
+                    <div class="btn-group pull-right right" style="z-index: 1001" ;>
+                        <h1 id="guess"><b id="guesses"></b></h1>
+                    </div>
+
                 </div>
 
-            </div>
-           
             <div class="container">
 
                 <!-- Trigger the modal with a button -->
@@ -74,13 +75,33 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Unlucky!</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        ...
+                    <div class="modal-body" id="lose">
+                        Game Over. Come back tomorrow and try again !
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModalScore" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Winner!</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        Game Over. Come back tomorrow and try again !
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -95,6 +116,7 @@
 </body>
 </html>
 <script>
+    document.getElementById('guesses').innerText = "5 Guesses Left";
     $("#button").click(function () {
         $('html,body').animate({
             scrollTop: $("#map1").offset().top
@@ -171,6 +193,7 @@
     editableLayers.color = "#fff";
     map.addLayer(editableLayers);
     var counter = 0;
+    var guesses = 5;
     
     map.on('draw:created', function (e) {
         var type = e.layerType,
@@ -181,15 +204,21 @@
         }
         if (type === 'circle') {
 
-            counter = counter + 1;
-            if (counter === 5) {
-                $('#exampleModal').modal('toggle');
-            }
-
+            
             
             var theCenterPt = layer.getLatLng();
             var theRadius = layer.getRadius();
-            latlng_a = new L.LatLng(39.950476966453934, -75.18113411647714);
+            latlng_a = new L.LatLng(59.33191320425021, 18.076390662143343);
+            
+
+            counter = counter + 1;
+            guesses = guesses - 1;
+            document.getElementById('guesses').innerText = guesses + " Guesses Left";
+            if (counter === 5) {
+                $('#exampleModal').modal('toggle');
+                document.getElementById('lose').innerText = "Good attempt mate, you were " + Math.round(latlng_a.distanceTo(theCenterPt) / 1000 * 10) / 10 + "km away!";
+            }
+
 
             console.log(latlng_a.distanceTo(theCenterPt));
             console.log("radius must be less than above to be within" + theRadius);
@@ -197,9 +226,17 @@
                 console.log(theRadius);
 
                 layer.options.color = "#7CFC00";
+
+                if (latlng_a.distanceTo(theCenterPt) < 20000) {
+                    $('#exampleModalScore').modal('toggle');
+                    document.getElementById("modalBody").innerText = "Congratulations, your cicle is within the target\n You are " + Math.round(latlng_a.distanceTo(theCenterPt) / 1000  * 10) / 10 + "km away!";
+
+                }
    
             }
         }
+
+
 
 
         editableLayers.addLayer(layer);

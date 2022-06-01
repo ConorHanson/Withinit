@@ -93,6 +93,34 @@ body {
     z-index: 400;
 }
 
+.right {
+    margin-right: 70px;
+}
+
+.popup {
+    /* apply 3 second hiding animation after 10 second delay */
+    animation: hide 3s 10s forwards;
+    /* fix popup at the center of screen, optional style */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    /* dimming entire screen except popup */
+    outline: 100vmax solid #ccc;
+}
+
+@keyframes hide {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+
 html, body {
     height: 100%;
     margin: 0;
