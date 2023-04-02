@@ -70,8 +70,7 @@ body {
     opacity: 0.3;
     position: relative;
     float: left;
-    left: 8px;
-    top: 15px;
+    top: 10px;
     transition: 0.5s;
 }
 
@@ -84,6 +83,11 @@ body {
 }
 #map1 {
     height: 100%;
+}
+
+#button{
+    width: 160px;
+    height: 60px;
 }
 
 #refreshButton {
